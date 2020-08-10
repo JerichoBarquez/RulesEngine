@@ -1,0 +1,53 @@
+package KieRule;
+import com.project.drools.entity.ParcelDto;
+global com.project.drools.entity.CostDetailDto costDetailDto;
+
+rule "Reject"
+
+when
+	itemDetailsObj : ParcelDto(weight > 50);
+then
+	costDetailDto.setCost(0);
+	costDetailDto.setRuleName("Reject");
+end;
+
+rule "Heavy Parcel"
+
+when
+	itemDetailsObj : ParcelDto(weight > 10);
+then
+	costDetailDto.setCost(itemDetailsObj.getWeight() * 20);
+	costDetailDto.setRuleName("Heavy Parcel");
+end;
+
+rule "Small Parcel"
+
+when
+    
+	itemDetailsObj : ParcelDto($volume : (height * width * length) != 0.0 && $volume < 1500);
+then
+	costDetailDto.setCost($volume * 0.03);
+	costDetailDto.setRuleName("Small Parcel");
+	costDetailDto.setVolume($volume);
+end;
+
+rule "Medium Parcel"
+
+when
+	itemDetailsObj : ParcelDto($volume : (height * width * length) != 0.0 && $volume < 2500);
+then
+	costDetailDto.setCost($volume * 0.04);
+	costDetailDto.setRuleName("Medium Parcel");
+	costDetailDto.setVolume($volume);
+end;
+
+
+rule "Large Parcel"
+
+when
+	itemDetailsObj : ParcelDto($volume : (height * width * length) >= 2500);
+then
+	costDetailDto.setCost($volume * 0.05);
+	costDetailDto.setRuleName("Large Parcel");
+	costDetailDto.setVolume($volume);
+end;
